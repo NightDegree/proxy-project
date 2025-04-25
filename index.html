@@ -3,13 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy</title>
+  <title>Website HTML Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      padding-top: 30px;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 60%;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #html-content {
+      margin-top: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-width: 90%;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f4f4f4;
+      font-family: monospace;
+      height: 400px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-  <h1>Proxy Website</h1>
-  <form method="GET" action="https://api.allorigins.win/raw?url=" target="_blank">
-    <input name="url" type="text" placeholder="Enter URL" style="width: 300px;" required />
-    <button type="submit">Go</button>
+
+  <h1>Website HTML Viewer</h1>
+  <p>Enter the URL to view the HTML of a website:</p>
+  
+  <form id="url-form">
+    <input type="text" id="url-input" placeholder="Enter website URL" required />
+    <button type="submit">View HTML</button>
   </form>
+  
+  <div id="html-content"></div>
+
+  <script>
+    document.getElementById('url-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const url = document.getElementById('url-input').value;
+
+      if (url) {
+        // Use AllOrigins API to fetch the HTML content of the entered URL
+        fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+          .then(response => response.json())
+          .then(data => {
+            const htmlContentDiv = document.getElementById('html-content');
+            htmlContentDiv.innerText = data.contents;  // Display the raw HTML content
+          })
+          .catch(error => {
+            const htmlContentDiv = document.getElementById('html-content');
+            htmlContentDiv.innerHTML = '<p>Error fetching the HTML content. Please try again.</p>';
+            console.error('Error fetching the HTML:', error);
+          });
+      }
+    });
+  </script>
+
 </body>
 </html>
